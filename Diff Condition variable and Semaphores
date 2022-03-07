@@ -1,0 +1,43 @@
+A condition variable is generally used to avoid busy waiting (looping repeatedly while checking a condition) while waiting for a resource to become available. 
+For instance, if you have a thread (or multiple threads) that can't continue onward until a queue is empty, 
+the busy waiting approach would be to just doing something like:
+
+//pseudocode
+while(!queue.empty())
+{
+   sleep(1);
+}
+
+The problem with this is that you're wasting processor time by having this thread repeatedly check the condition. 
+Why not instead have a synchronization variable that can be signaled to tell the thread that the resource is available?
+
+//pseudocode
+syncVar.lock.acquire();
+
+while(!queue.empty())
+{
+   syncVar.wait();
+}
+
+//do stuff with queue
+
+syncVar.lock.release();
+Presumably, you'll have a thread somewhere else that is pulling things out of the queue. When the queue is empty, 
+it can call syncVar.signal() to wake up a random thread that is sitting asleep on syncVar.wait() (or there's usually also a signalAll() or 
+broadcast() method to wake up all the threads that are waiting).
+
+==========================================
+Semaphore can be used as lock mechanisum as well with value 0 and 1, Whicn is binray semaphores.
+But condiation varible it's juts signalling mecganisum 
+
+====================
+Why while loop is used in condiation varible instead of if condiation since anyway "if the condiation is flaese, condtion varible wait" ?
+
+Just to elaborate on why there's this while loop instead of a simple if: something called spurios wakeup. 
+Quoting this wikipedia article: "One of the reasons for this is a spurious wakeup; that is, 
+a thread might be awoken from its waiting state even though no thread signaled the condition variable" 
+
+It's also helpful for the case where a broadcast wakes up more threads than there are resources available 
+(e.g. broadcast wakes up 3 threads, but there are only 2 items in the queue)
+
+===============================
