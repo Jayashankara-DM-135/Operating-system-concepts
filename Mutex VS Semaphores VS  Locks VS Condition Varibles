@@ -206,3 +206,34 @@ parent then gets a chance to run, it will call sem_wait() and find the value
 of the semaphore to be 1; the parent will thus decrement the value and return
 from sem_wait() without waiting, also achieving the desired effect.
 
+
+>>>>>>>>>>>>>>>>>>>>
+Bounded Buffer or Producer- Consumer Problem:
+
+sem_t empty; // Max Buffer size
+sem_t full; // 0
+sem_t mutex; // 1
+
+void *producer(void *arg) {
+    int i;
+    for (i = 0; i < loops; i++) {
+        sem_wait(&empty);           // line P1
+        sem_wait(&mutex);           // line P1.5 (MOVED THE MUTEX TO HERE ...)
+        put(i);                     // line P2
+        sem_post(&mutex);           // line P2.5 (... AND TO HERE)
+        sem_post(&full);            // line P3
+    }
+}
+
+void *consumer(void *arg) {
+    int i;
+    for (i = 0; i < loops; i++) {
+        sem_wait(&full);            // line C1
+        sem_wait(&mutex);           // line C1.5 (MOVED THE MUTEX TO HERE ...)
+        int tmp = get();            // line C2
+        sem_post(&mutex);           // line C2.5 (... AND TO HERE)
+        sem_post(&empty);           // line C3
+        printf("%d\n", tmp);
+    }
+}
+
