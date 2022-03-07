@@ -31,7 +31,7 @@ Semaphore can be used as lock mechanisum as well with value 0 and 1, Whicn is bi
 But condiation varible it's juts signalling mecganisum 
 
 ====================
-Why while loop is used in condiation varible instead of if condiation since anyway "if the condiation is flaese, condtion varible wait" ?
+>>> Why while loop is used in condiation varible instead of if condiation since anyway "if the condiation is flaese, condtion varible wait" ?
 
 Just to elaborate on why there's this while loop instead of a simple if: something called spurios wakeup. 
 Quoting this wikipedia article: "One of the reasons for this is a spurious wakeup; that is, 
@@ -40,4 +40,8 @@ a thread might be awoken from its waiting state even though no thread signaled t
 It's also helpful for the case where a broadcast wakes up more threads than there are resources available 
 (e.g. broadcast wakes up 3 threads, but there are only 2 items in the queue)
 
+To clarify a bit, the reason that the condition may still be false to a thread that has just woken up (resulting in a spurious wakeup) 
+is that there might have been a context switch before the thread got a chance to check the condition again, 
+where some other scheduled thread made that condition false. 
+This is one reason that I know for a spurious wakeup, don't know if there are more
 ===============================
