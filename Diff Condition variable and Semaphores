@@ -45,3 +45,35 @@ is that there might have been a context switch before the thread got a chance to
 where some other scheduled thread made that condition false. 
 This is one reason that I know for a spurious wakeup, don't know if there are more
 ===============================
+
+Diff betwen Monitor and Semaphores:
+We should even compare these two  beacuse Moniotor is like mutex for locking and Semaphores is for Sigannling.
+
+A Monitor(Mutally exclusive lock for objects): is an object designed to be accessed from multiple threads. 
+The member functions or methods of a monitor object will enforce mutual exclusion, so only one thread may be performing any action on the object at a given time. 
+If one thread is currently executing a member function of the object then any other thread that tries to call a member function of that object will 
+have to wait until the first has finished.
+
+A Semaphore is a lower-level object. You might well use a semaphore to implement a monitor. 
+A semaphore essentially is just a counter. When the counter is positive, if a thread tries to acquire the semaphore then it is allowed, and 
+the counter is decremented. When a thread is done then it releases the semaphore, and increments the counter.
+
+============================
+Diff Monitor and Mutext:
+
+Conceptually they are the same. But usually they are implemented slightly differently
+
+Monitor: High level construct, Provides locking mechnisim at object level, Hence member function and members can be protectd by thread of same process. 
+        Since it use space lock less overhead compare to Mutex which is provide by linux kernel. 
+        Mutex form kernel will magae lock even b/w thread of different process.
+ 
+
+Usually, the implementation of monitors is faster/light-weight, since it is designed for multi-threaded synchronization within the same process. 
+Also, usually, it is provided by a framework/library itself (as opposed to requesting the OS).
+
+Mutex
+
+Usually, mutexes are provided by the OS kernel and libraries/frameworks simply provide an interface to invoke it. 
+This makes them heavy-weight/slower, but they work across threads on different processes. OS might also provide features to access the mutex by name for 
+easy sharing between instances of separate executables (as opposed to using a handle that can be used by fork only).
+
